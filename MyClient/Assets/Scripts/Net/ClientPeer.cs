@@ -46,6 +46,21 @@ public class ClientPeer : MonoBehaviour
     private byte[] receiveBuffer = new byte[1024];
 
     /// <summary>
+    /// 数据缓存
+    /// </summary>
+    private List<byte> receiveCache = new List<byte>();
+
+    /// <summary>
+    /// 是否正在处理接收到的数据
+    /// </summary>
+    private bool isProcessReceive = false;
+
+    /// <summary>
+    /// 存放消息的队列
+    /// </summary>
+    private Queue<NetMsg> netMsgQueue = new Queue<NetMsg>();
+
+    /// <summary>
     /// 开始接受数据
     /// </summary>
     private void StartReceive()
@@ -66,5 +81,32 @@ public class ClientPeer : MonoBehaviour
     private void ReceiveCallback(IAsyncResult ar)
     {
         int length = clientSocket.EndReceive(ar);
+        byte[] data = new byte[length];
+        Buffer.BlockCopy(receiveBuffer, 0, data, 0, length);
+        receiveCache.AddRange(data);
+
+        if (!isProcessReceive)
+        {
+            ProcessReceive();
+        }
+
+        StartReceive();
+    }
+
+    /// <summary>
+    /// 处理接收到的数据
+    /// </summary>
+    private void ProcessReceive()
+    {
+        isProcessReceive = true;
+        byte[] packet = EncodeTool.DecodePacket(ref receiveCache);
+        if (packet == null)
+        {
+            isProcessReceive = false;
+            return;
+        }
+        NetMsg msg = EncodeTool.DecodeMsg(packet);
+        netMsgQueue.Enqueue(msg);
+        ProcessReceive();
     }
 }
