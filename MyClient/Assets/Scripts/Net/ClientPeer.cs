@@ -9,10 +9,13 @@ public class ClientPeer : MonoBehaviour
 {
     private Socket clientSocket;
 
+    private NetMsg msg;
+
     public ClientPeer()
     {
         try
         {
+            msg = new NetMsg();
             clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
         catch (System.Exception e)
@@ -39,6 +42,8 @@ public class ClientPeer : MonoBehaviour
             Debug.LogError(e.Message);
         }
     }
+
+    #region 接收数据
 
     /// <summary>
     /// 数据暂存区
@@ -109,4 +114,30 @@ public class ClientPeer : MonoBehaviour
         netMsgQueue.Enqueue(msg);
         ProcessReceive();
     }
+
+    #endregion
+
+    #region 发送消息
+
+    public void SendMsg(int opCode, int subCode, object value)
+    {
+        msg.Change(opCode, subCode, value);
+        SendMsg(msg);
+    }
+
+    public void SendMsg(NetMsg msg)
+    {
+        try
+        {
+            byte[] data = EncodeTool.EncodeMsg(msg);
+            byte[] packet = EncodeTool.EncodePacket(data);
+            clientSocket.Send(packet);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
+    }
+
+    #endregion
 }
