@@ -63,7 +63,7 @@ public class ClientPeer : MonoBehaviour
     /// <summary>
     /// 存放消息的队列
     /// </summary>
-    private Queue<NetMsg> netMsgQueue = new Queue<NetMsg>();
+    public Queue<NetMsg> netMsgQueue = new Queue<NetMsg>();
 
     /// <summary>
     /// 开始接受数据
