@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Protocol.Code;
+using Protocol.Dto;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -89,7 +91,8 @@ public class RegisterPanel : MonoBehaviour
 		
 		// TODO
 		// 向服务器发送数据， 注册一个用户
-		
+		AccountDto accountDto = new AccountDto(input_UserName.text, input_Password.text);
+		NetMsgCenter.Instance.SendMsg(OpCode.Account, AccountCode.Register_CREQ, accountDto);
 	}
 	
 	private void Show()
