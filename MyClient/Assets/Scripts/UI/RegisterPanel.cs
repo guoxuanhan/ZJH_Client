@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RegisterPanel : MonoBehaviour 
@@ -11,6 +12,10 @@ public class RegisterPanel : MonoBehaviour
 	private Button btn_Back;
 	private Button btn_Register;
 	private Button btn_Pwd;
+	/// <summary>
+	/// 是否显示明文密码
+	/// </summary>
+	private bool isShowPassword = false;
 
 	private void Awake()
 	{
@@ -25,7 +30,9 @@ public class RegisterPanel : MonoBehaviour
 		btn_Back = transform.Find("btn_Back").GetComponent<Button>();
 		btn_Register = transform.Find("btn_Register").GetComponent<Button>();
 		btn_Pwd = transform.Find("btn_Pwd").GetComponent<Button>();
-		btn_Back.onClick.AddListener(OnBackClick);
+		btn_Back.onClick.AddListener(OnBackButtonClick);
+		btn_Register.onClick.AddListener(OnRegisterButtonClick);
+		btn_Pwd.onClick.AddListener(OnPwdButtonClick);
 		gameObject.SetActive(false);
 	}
 	
@@ -35,12 +42,54 @@ public class RegisterPanel : MonoBehaviour
 	}
 
 	/// <summary>
+	/// 密码显示或隐藏点击
+	/// </summary>
+	private void OnPwdButtonClick()
+	{
+		isShowPassword = !isShowPassword;
+		if (isShowPassword)
+		{
+			input_Password.contentType = InputField.ContentType.Standard;
+			btn_Pwd.GetComponentInChildren<Text>().text = "隐藏";
+		}
+		else
+		{
+			input_Password.contentType = InputField.ContentType.Password;
+			btn_Pwd.GetComponentInChildren<Text>().text = "显示";
+		}
+
+		EventSystem.current.SetSelectedGameObject(input_Password.gameObject);
+	}
+	
+	/// <summary>
 	/// 返回点击按钮
 	/// </summary>
-	private void OnBackClick()
+	private void OnBackButtonClick()
 	{
 		gameObject.SetActive(false);
 		EventCenter.Broadcast(EventDefine.ShowLoginPanel);
+	}
+
+	/// <summary>
+	/// 注册按钮点击
+	/// </summary>
+	private void OnRegisterButtonClick()
+	{
+		if (input_UserName.text == null || input_UserName.text == "")
+		{
+			Debug.Log("请输入用户名");
+			return;
+		}
+		
+		if (input_Password.text == null || input_Password.text == "")
+		{
+			Debug.Log("请输入密码");
+			return;
+		}
+		
+		// TODO
+		// 向服务器发送数据， 注册一个用户
+		
 	}
 	
 	private void Show()

@@ -23,7 +23,8 @@ public class LoginPanel : MonoBehaviour
         input_Password = transform.Find("input_Password").GetComponent<InputField>();
         btn_Login = transform.Find("btn_Login").GetComponent<Button>();
         btn_Register = transform.Find("btn_Register").GetComponent<Button>();
-        btn_Register.onClick.AddListener(OnRegisterClick);
+        btn_Register.onClick.AddListener(OnRegisterButtonClick);
+        btn_Login.onClick.AddListener(OnLoginButtonClick);
         gameObject.SetActive(true);
     }
     
@@ -35,9 +36,30 @@ public class LoginPanel : MonoBehaviour
     /// <summary>
     /// 注册按钮点击
     /// </summary>
-    private void OnRegisterClick()
+    private void OnRegisterButtonClick()
     {
         EventCenter.Broadcast(EventDefine.ShowRegisterPanel);
+    }
+
+    /// <summary>
+    /// 登录按钮点击
+    /// </summary>
+    private void OnLoginButtonClick()
+    {
+        if (input_UserName.text == null || input_UserName.text == "")
+        {
+            Debug.Log("请输入用户名");
+            return;
+        }
+		
+        if (input_Password.text == null || input_Password.text == "")
+        {
+            Debug.Log("请输入密码");
+            return;
+        }
+        
+        // TODO
+        // 向服务器发送请求登录
     }
 
     private void Show()
