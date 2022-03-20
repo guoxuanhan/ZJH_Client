@@ -48,13 +48,13 @@ public class LoginPanel : MonoBehaviour
     {
         if (input_UserName.text == null || input_UserName.text == "")
         {
-            Debug.Log("请输入用户名");
+            EventCenter.Broadcast(EventDefine.Hint, "请输入用户名");
             return;
         }
 		
         if (input_Password.text == null || input_Password.text == "")
         {
-            Debug.Log("请输入密码");
+            EventCenter.Broadcast(EventDefine.Hint, "请输入密码");
             return;
         }
         

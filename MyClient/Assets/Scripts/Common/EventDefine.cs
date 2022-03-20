@@ -2,4 +2,5 @@
 {
     ShowRegisterPanel,
     ShowLoginPanel,
+    Hint,
 }
